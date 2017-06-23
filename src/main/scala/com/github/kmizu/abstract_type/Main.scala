@@ -41,19 +41,21 @@ object Main {
       type Con <: TC
       type In = String
       type Out = String
-      def useFunctor(functor: Fnc { type C = Con; type In = String; type Out = String })
-                    (container: Con { type T = String })
-                    (f: String => String): Con { type T = String } = {
+      def useFunctor(container: Con { type T = String })
+                    (f: String => String)
+                    (implicit functor: Fnc { type C = Con; type In = String; type Out = String })
+      : Con { type T = String } = {
         functor.map(container)(f)
       }
     }
     object CellFunctorUser extends FunctorUser{self =>
       override type Fnc = Functor.CellFunctor
       override type Con = Cell
-      val result = useFunctor(new Functor.CellFunctor {
+      implicit val functor = (new Functor.CellFunctor {
         override type In = String
         override type Out = String
-      })(cell)(x => x * 3)
+      })
+      val result = useFunctor(cell)(x => x * 3)
       println(result)
     }
     println(CellFunctorUser.result)
