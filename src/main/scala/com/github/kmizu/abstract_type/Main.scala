@@ -53,15 +53,7 @@ object Main {
       val result = useFunctor(new Functor.CellFunctor {
         override type In = String
         override type Out = String
-      })(
-        new Cons { override type T = String
-          def head = "A"
-          def tail = new Cons { override type T = String
-            def head = "B"
-            def tail = new Empty { override type T = String }
-          }
-        }
-      )(x => x * 3)
+      })(cell)(x => x * 3)
       println(result)
     }
     println(CellFunctorUser.result)
